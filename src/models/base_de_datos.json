@@ -1,0 +1,41 @@
+[
+  {
+    "id": 1,
+    "titular": "Otto",
+    "saldo": 490,
+    "movimientos": [
+      "Deposito de efectivo monto: 200 a la fecha de: 1/4/2026, 9:28:50 p. m.",
+      "Deposito de efectivo monto: 200 a la fecha de: 2/4/2026, 5:08:26 p. m.",
+      "Deposito de efectivo monto: 200 a la fecha de: 2/4/2026, 5:12:25 p. m.",
+      "Deposito de efectivo monto: 400 a la fecha de: 2/4/2026, 5:14:01 p. m.",
+      "Deposito de efectivo monto: 350 a la fecha de: 2/4/2026, 5:27:59 p. m.",
+      "Retiro de efectivo monto: 760 a la fecha de: 2/4/2026, 5:28:02 p. m.",
+      "Deposito de efectivo monto: 100 a la fecha de: 3/4/2026, 2:36:00 p. m.",
+      "Deposito de efectivo monto: 100 a la fecha de: 3/4/2026, 2:36:24 p. m.",
+      "Deposito de efectivo monto: 100 a la fecha de: 3/4/2026, 2:51:37 p. m.",
+      "Retiro de efectivo monto: 200 a la fecha de: 3/4/2026, 3:03:36 p. m.",
+      "Retiro de efectivo monto: 200 a la fecha de: 3/4/2026, 3:03:41 p. m.",
+      "Deposito de efectivo monto: 100 a la fecha de: 3/4/2026, 4:01:56 p. m.",
+      "Retiro de efectivo monto: 200 a la fecha de: 3/4/2026, 4:27:52 p. m.",
+      "Retiro de efectivo monto: 200 a la fecha de: 3/4/2026, 4:27:57 p. m.",
+      "Retiro de efectivo monto: 200 a la fecha de: 3/4/2026, 4:28:00 p. m."
+    ]
+  },
+  {
+    "id": 2,
+    "titular": "Joseph",
+    "saldo": 3400,
+    "movimientos": [
+      "Deposito de efectivo monto: 750 a la fecha de: 1/4/2026, 9:18:12 p. m.",
+      "Deposito de efectivo monto: 750 a la fecha de: 1/4/2026, 9:18:15 p. m.",
+      "Deposito de efectivo monto: 750 a la fecha de: 1/4/2026, 9:18:25 p. m.",
+      "Deposito de efectivo monto: 750 a la fecha de: 1/4/2026, 9:18:37 p. m.",
+      "Deposito de efectivo monto: 750 a la fecha de: 1/4/2026, 9:22:17 p. m.",
+      "Deposito de efectivo monto: 200 a la fecha de: 1/4/2026, 9:28:59 p. m.",
+      "Retiro de efectivo monto: 3000 a la fecha de: 2/4/2026, 5:19:08 p. m.",
+      "Deposito de efectivo monto: 1000 a la fecha de: 2/4/2026, 5:21:48 p. m.",
+      "Retiro de efectivo monto: 200 a la fecha de: 2/4/2026, 5:21:52 p. m.",
+      "Deposito de efectivo monto: 650 a la fecha de: 3/4/2026, 2:35:29 p. m."
+    ]
+  }
+]
