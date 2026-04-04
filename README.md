@@ -36,7 +36,7 @@ Consegui que este pequeño sistema realizara gestion de cuentas y movimientos fi
 
 | Ruta | Método     | Descripcion                |
 | :-------- | :------- | :------------------------- |
-| `/api/historial/:nombre` | `POST` | Crear un nuevo cliente en el sistema. |
+| `/api/registro` | `POST` | Crear un nuevo cliente en el sistema. |
 
 | Ruta | Método     | Descripcion                |
 | :-------- | :------- | :------------------------- |
@@ -56,3 +56,9 @@ Consegui que este pequeño sistema realizara gestion de cuentas y movimientos fi
 
 - Eventualmente crear una interfaz para que sea atractiva visualmente.
 
+
+## Screenshots
+
+![App Screenshot](https://prnt.sc/uHLfBFUp_cTr)
+
+![App Screenshot](https://prnt.sc/uHLfBFUp_cTr)
