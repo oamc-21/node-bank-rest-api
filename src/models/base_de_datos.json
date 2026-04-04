@@ -2,7 +2,7 @@
   {
     "id": 1,
     "titular": "Otto",
-    "saldo": 490,
+    "saldo": 1290,
     "movimientos": [
       "Deposito de efectivo monto: 200 a la fecha de: 1/4/2026, 9:28:50 p. m.",
       "Deposito de efectivo monto: 200 a la fecha de: 2/4/2026, 5:08:26 p. m.",
@@ -18,7 +18,19 @@
       "Deposito de efectivo monto: 100 a la fecha de: 3/4/2026, 4:01:56 p. m.",
       "Retiro de efectivo monto: 200 a la fecha de: 3/4/2026, 4:27:52 p. m.",
       "Retiro de efectivo monto: 200 a la fecha de: 3/4/2026, 4:27:57 p. m.",
-      "Retiro de efectivo monto: 200 a la fecha de: 3/4/2026, 4:28:00 p. m."
+      "Retiro de efectivo monto: 200 a la fecha de: 3/4/2026, 4:28:00 p. m.",
+      {
+        "tipo": "deposito",
+        "monto": 400,
+        "fecha": "2026-04-04T03:56:42.211Z",
+        "detalle": "Deposito de efectivo"
+      },
+      {
+        "tipo": "deposito",
+        "monto": 400,
+        "fecha": "2026-04-04T03:56:45.476Z",
+        "detalle": "Deposito de efectivo"
+      }
     ]
   },
   {
@@ -36,6 +48,13 @@
       "Deposito de efectivo monto: 1000 a la fecha de: 2/4/2026, 5:21:48 p. m.",
       "Retiro de efectivo monto: 200 a la fecha de: 2/4/2026, 5:21:52 p. m.",
       "Deposito de efectivo monto: 650 a la fecha de: 3/4/2026, 2:35:29 p. m."
+    ]
+  },
+  {
+    "titular": "Miriam",
+    "saldo": 7200,
+    "movimientos": [
+      "Deposito de efectivo monto: 7200 a la fecha de: 3/4/2026, 8:47:20 p. m."
     ]
   }
 ]

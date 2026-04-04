@@ -1,17 +1,32 @@
-const { verHistorial, depositar, retirar } = require("./src/services/bancoService");
+require("dotenv").config();
 const express = require("express");
-const PORT = 3000;
+const bancoRoutes = require("./src/routes/bancoRoutes");
 const app = express();
+const PORT = process.env.PORT || 8383;
 
 app.use(express.json());
 
-const bancoRoutes = require("./src/routes/bancoRoutes");
+//
+app.use((req, res, next) => {
+  console.log(
+    `${req.method} entrando a ${req.url} a la fecha y hora de: ${new Date().toLocaleString()}`,
+  );
+  next();
+});
+
+//ruta apis
 app.use("/api", bancoRoutes);
 
-app.get("/", (res) => {
-  res.send("Hola desde el server del banco");
+app.use((err, req, res, next) =>{
+    console.error("Ha ocurrido un problema...", err.message);
+    res.status(500).json({
+        status: "error",
+        message: "Algo salió mal al contactar con el servidor",
+        details: err.message
+    });
+
 });
 
 app.listen(PORT, () => {
-  console.log("Servidor listo");
+  console.log(`Servidor listo en el puerto ${PORT}`);
 });

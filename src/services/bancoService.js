@@ -11,9 +11,13 @@ const depositar = async (nombre, monto) => {
     throw new Error("Usuario no existe!");
   }
   usuario.saldo += monto;
-  usuario.movimientos.push(
-    `Deposito de efectivo monto: ${monto} a la fecha de: ${new Date().toLocaleString()}`,
-  );
+  usuario.movimientos.push({
+    tipo: "deposito",
+    monto: monto,
+    fecha: new Date().toISOString(),
+    detalle: "Deposito de efectivo"
+  });
+
   await guardarDatos(cuenta);
   return usuario.saldo;
 };
@@ -33,9 +37,12 @@ const retirar = async (nombre, monto) => {
     throw new Error("Saldo insuficiente");
   }
   usuario.saldo -= monto;
-  usuario.movimientos.push(
-    `Retiro de efectivo monto: ${monto} a la fecha de: ${new Date().toLocaleString()}`,
-  );
+  usuario.movimientos.push({
+    tipo: "retiro",
+    monto: monto,
+    fecha: new Date().toISOString,
+    detalle: "Retiro de efectivo"
+  });
   await guardarDatos(cuenta);
   return usuario.saldo;
 };
