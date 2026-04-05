@@ -5,9 +5,9 @@ const {realizarDeposito, realizarRetiro, consultarHistorial, registrarCliente, b
 //rutas
 router.post("/depositar", realizarDeposito);
 router.post("/retirar", realizarRetiro);
-router.get("/historial/:nombre", consultarHistorial);
+router.get("/historial/:identificacion", consultarHistorial);
 router.post("/registrar", registrarCliente);
-router.delete("/eliminar/:nombre", borrarCliente);
+router.delete("/eliminar/:identificacion", borrarCliente);
 
 
 module.exports = router;

@@ -1,58 +1,54 @@
-const usuario = require("../models/usuario");
 const Usuario = require("../models/usuario");
 
 //#region () depositar
 const depositar = async (identificacion, monto) => {
-  const usuarioExistente = await Usuario.findOne({identificacion});
-  if(!usuarioExistente){
+  const usuarioExistente = await Usuario.findOne({ identificacion });
+  if (!usuarioExistente) {
     throw new Error("Usuario no existe!");
   }
   usuarioExistente.saldo += monto;
   usuarioExistente.movimientos.push({
     tipo: "Ingreso",
     monto: monto,
-    detalle: "Deposito de efectivo"
+    detalle: "Deposito de efectivo",
   });
   await usuarioExistente.save();
-  return usuario.saldo;
+  return usuarioExistente.saldo;
 };
 //#endregion
 
 //#region () retirar
-const retirar = async (nombre, monto) => {
-  const cuenta = await obtenerDatos();
-  const usuario = cuenta.find((u) => u.titular === nombre);
-  if (!usuario) {
-    throw new Error("Usuario no existe!");
+const retirar = async (identificacion, monto) => {
+  const usuarioExistente = await Usuario.findOne({
+    identificacion: identificacion,
+  });
+  if (!usuarioExistente) {
+    throw new Error("El usuario no existe!");
   }
-  if (typeof monto != "number" || monto <= 0) {
-    throw new Error("El monto ingresado no es válido!");
+
+  if (usuarioExistente.saldo < monto) {
+    throw new Error("Fondos insuficientes para realizar la operación");
   }
-  if (monto > usuario.saldo) {
-    throw new Error("Saldo insuficiente");
-  }
-  usuario.saldo -= monto;
-  usuario.movimientos.push({
-    tipo: "retiro",
+  usuarioExistente.saldo -= monto;
+  usuarioExistente.movimientos.push({
+    tipo: "Egreso",
     monto: monto,
-    fecha: new Date().toISOString,
     detalle: "Retiro de efectivo",
   });
-  await guardarDatos(cuenta);
-  return usuario.saldo;
+  await usuarioExistente.save();
+  return usuarioExistente.saldo;
 };
 //#endregion
 
 //#region () ver historial
-const verHistorial = async (nombre) => {
-  const cuenta = await obtenerDatos();
-  const user = cuenta.find((u) => u.titular === nombre);
-
-  if (!user) {
-    throw new Error("Usuario no encontrado..");
+const verHistorial = async (identificacion) => {
+  const usuarioExistente = await Usuario.findOne({
+    identificacion: identificacion,
+  });
+  if (!usuarioExistente) {
+    throw new Error("Usuario no existe!");
   }
-
-  return user.movimientos;
+  return usuarioExistente.movimientos;
 };
 
 //#endregion
@@ -76,16 +72,14 @@ const agregarCliente = async (nombre, identificacion) => {
 //#endregion
 
 //#region () Eliminar cliente
-const eliminarCliente = async (nombre) => {
-  const datos = await obtenerDatos();
-  const datosFiltrados = datos.filter(
-    (u) => u.titular.toLowerCase() !== nombre.toLowerCase(),
-  );
-  if (datos.length === datosFiltrados.length) {
-    throw new Error("El usuario no ha podido ser eliminado..");
+const eliminarCliente = async (identificacion) => {
+  const usuarioBorrado = await Usuario.findOneAndDelete({
+    identificacion: identificacion,
+  });
+  if (!usuarioBorrado) {
+    throw new Error("Usuario no encontrado!");
   }
-  await guardarDatos(datosFiltrados);
-  return { mensaje: `El cliente ${nombre} ha sido eliminado correctamente!` };
+  return usuarioBorrado;
 };
 
 //#endregion
