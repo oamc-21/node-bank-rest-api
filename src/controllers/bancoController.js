@@ -61,9 +61,10 @@ const consultarHistorial = async (req, res) => {
 };
 //#endregion
 
+//#region registrarCliente ()
 const registrarCliente = async (req, res) => {
   try {
-    const { nombre } = req.body;
+    const { nombre, identificacion } = req.body;
     if (!nombre || !nombre.trim()) {
       return res.status(400).json({
         error: "El nombre no puede estar vacio o contener solo espacios",
@@ -78,7 +79,9 @@ const registrarCliente = async (req, res) => {
     res.status(400).json({ mensaje: error.message });
   }
 };
+//#endregion
 
+//#region borrar Cliente ()
 const borrarCliente = async (req, res) => {
   try {
     const nombre = req.params.nombre;
@@ -98,6 +101,7 @@ const borrarCliente = async (req, res) => {
     });
   }
 };
+//#endregion
 
 module.exports = {
   realizarDeposito,
@@ -106,3 +110,4 @@ module.exports = {
   registrarCliente,
   borrarCliente,
 };
+

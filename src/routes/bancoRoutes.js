@@ -9,4 +9,6 @@ router.get("/historial/:nombre", consultarHistorial);
 router.post("/registrar", registrarCliente);
 router.delete("/eliminar/:nombre", borrarCliente);
 
+
 module.exports = router;
+

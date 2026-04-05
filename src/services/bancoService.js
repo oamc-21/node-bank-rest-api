@@ -1,24 +1,19 @@
-const { obtenerDatos, guardarDatos } = require("../models/database");
+const usuario = require("../models/usuario");
+const Usuario = require("../models/usuario");
 
 //#region () depositar
-const depositar = async (nombre, monto) => {
-  const cuenta = await obtenerDatos();
-  const usuario = cuenta.find((u) => u.titular === nombre);
-  if (typeof monto != "number" || monto <= 0) {
-    throw new Error("El monto es inválido");
-  }
-  if (!usuario) {
+const depositar = async (identificacion, monto) => {
+  const usuarioExistente = await Usuario.findOne({identificacion});
+  if(!usuarioExistente){
     throw new Error("Usuario no existe!");
   }
-  usuario.saldo += monto;
-  usuario.movimientos.push({
-    tipo: "deposito",
+  usuarioExistente.saldo += monto;
+  usuarioExistente.movimientos.push({
+    tipo: "Ingreso",
     monto: monto,
-    fecha: new Date().toISOString(),
     detalle: "Deposito de efectivo"
   });
-
-  await guardarDatos(cuenta);
+  await usuarioExistente.save();
   return usuario.saldo;
 };
 //#endregion
@@ -41,7 +36,7 @@ const retirar = async (nombre, monto) => {
     tipo: "retiro",
     monto: monto,
     fecha: new Date().toISOString,
-    detalle: "Retiro de efectivo"
+    detalle: "Retiro de efectivo",
   });
   await guardarDatos(cuenta);
   return usuario.saldo;
@@ -63,33 +58,35 @@ const verHistorial = async (nombre) => {
 //#endregion
 
 //#region () agregar cliente
-const agregarCliente = async (nombre) => {
-  const datos = await obtenerDatos();
-  const buscarUsuario = datos.find(
-    (u) => u.titular.toLowerCase() === nombre.toLowerCase(),
-  );
-  if (buscarUsuario) {
-    throw new Error("Usuario ya existe!");
+const agregarCliente = async (nombre, identificacion) => {
+  const usuarioExistente = await Usuario.findOne({
+    identificacion: identificacion,
+  });
+  if (usuarioExistente) {
+    throw new Error("Ya existe un cliente con esa identificación");
   }
-  const nuevoCliente = { titular: nombre, saldo: 0, movimientos: [] };
-  datos.push(nuevoCliente);
-  await guardarDatos(datos);
-  return nuevoCliente;
+  const nuevoUsuario = new Usuario({
+    nombre: nombre,
+    identificacion: identificacion,
+  });
+  await nuevoUsuario.save();
+  return nuevoUsuario;
 };
 
 //#endregion
 
 //#region () Eliminar cliente
-const eliminarCliente = async (nombre) =>{
+const eliminarCliente = async (nombre) => {
   const datos = await obtenerDatos();
-  const datosFiltrados = datos.filter((u) => u.titular.toLowerCase() !== nombre.toLowerCase());
+  const datosFiltrados = datos.filter(
+    (u) => u.titular.toLowerCase() !== nombre.toLowerCase(),
+  );
   if (datos.length === datosFiltrados.length) {
     throw new Error("El usuario no ha podido ser eliminado..");
-    
   }
   await guardarDatos(datosFiltrados);
-  return {mensaje: `El cliente ${nombre} ha sido eliminado correctamente!`}
-}
+  return { mensaje: `El cliente ${nombre} ha sido eliminado correctamente!` };
+};
 
 //#endregion
 
