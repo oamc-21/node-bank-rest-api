@@ -36,7 +36,7 @@ El proyecto está organizado bajo el patrón **Model-Service-Controller**, separ
 | `POST` | `/api/transferencia` | **Core:** Envío de dinero con seguridad ACID e Idempotencia. |
 | `GET` | `/api/movimientos/:identificacion` | Historial inteligente (ingresos/egresos) por cédula. |
 | `DELETE` | `/api/eliminar/:identificacion` | Elimina un registro de cliente del sistema. |
-| `GET` | `/docs` | **Documentación Interactiva** (Swagger/Scalar). |
+| `GET` | `/docs` | **Documentación Interactiva** (Scalar). |
 
 ---
 
@@ -45,7 +45,7 @@ El proyecto está organizado bajo el patrón **Model-Service-Controller**, separ
 * **Runtime:** Node.js
 * **Framework:** Express.js
 * **DB:** MongoDB Atlas con Mongoose ODM
-* **Documentación:** Scalar API Reference (Swagger)
+* **Documentación:** Scalar API Reference
 * **Entorno:** Dotenv para gestión segura de credenciales
 
 ---
