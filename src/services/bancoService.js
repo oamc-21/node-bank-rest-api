@@ -138,6 +138,12 @@ const transferir = async (idEmisor, idReceptor, monto, idempotencia_key) => {
   }
 };
 
+const obtenerMovimientos = async (usuarioId) =>{
+  return await Transferencia.find({$or: [
+    {emisor: usuarioId},{receptor: usuarioId}
+  ]}).sort({createdAt: -1}).populate('emisor', 'nombre').populate('receptor', 'nombre');
+}
+
 module.exports = {
   verHistorial,
   depositar,
@@ -145,4 +151,5 @@ module.exports = {
   agregarCliente,
   eliminarCliente,
   transferir,
+  obtenerMovimientos,
 };

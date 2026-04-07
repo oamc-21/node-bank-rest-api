@@ -61,7 +61,7 @@ app.use(
             },
           },
 
-          "/api/historial/{identificacion}": {
+          "/api/movimientos/{identificacion}": {
             get: {
               summary: "Obtener historial de movimientos de un cliente",
               responses: { 200: { description: "Historial de movimientos: " } },

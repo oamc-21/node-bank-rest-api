@@ -1,3 +1,4 @@
+const Usuario = require("../models/UsuarioModel");
 const {
   depositar,
   retirar,
@@ -5,6 +6,7 @@ const {
   agregarCliente,
   eliminarCliente,
   transferir,
+  obtenerMovimientos,
 } = require("../services/bancoService");
 
 //#region realizar deposito ()
@@ -130,6 +132,27 @@ const realizarTransferencia = async (req, res) => {
 
 //#endregion
 
+const obtenerHMovimientos = async(req, res)=>{
+
+  try {
+    const { identificacion } = req.params;
+    const usuario = await Usuario.findOne({ identificacion: identificacion });
+    if (!usuario) {
+      return res.status(400).json({ mensaje: "Usuario no encontrado!" });
+    }
+
+    const resultado = await obtenerMovimientos(usuario._id);
+    res.status(200).json({
+      cliente: usuario.nombre,
+      saldoActual: usuario.saldo,
+      movimientos: resultado,
+    });
+  } catch (error) {
+    res.status(500).json({mensaje: "Error al obtener el historial de movimientos", error: error.message});
+  }
+  
+
+};
 module.exports = {
   realizarDeposito,
   realizarRetiro,
@@ -137,4 +160,5 @@ module.exports = {
   registrarCliente,
   borrarCliente,
   realizarTransferencia,
+  obtenerHMovimientos,
 }
