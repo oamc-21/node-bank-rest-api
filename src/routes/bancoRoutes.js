@@ -1,14 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const {realizarDeposito, realizarRetiro, consultarHistorial, registrarCliente, borrarCliente} = require("../controllers/bancoController");
+const {
+  realizarDeposito,
+  realizarRetiro,
+  consultarHistorial,
+  registrarCliente,
+  borrarCliente,
+  realizarTransferencia,
+} = require("../controllers/bancoController");
 
-//rutas
+
+router.post("/registrar", registrarCliente);
 router.post("/depositar", realizarDeposito);
 router.post("/retirar", realizarRetiro);
 router.get("/historial/:identificacion", consultarHistorial);
-router.post("/registrar", registrarCliente);
 router.delete("/eliminar/:identificacion", borrarCliente);
-
+router.post("/transferencia", realizarTransferencia)
 
 module.exports = router;
-

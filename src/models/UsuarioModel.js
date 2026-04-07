@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const movimientoSchema = new mongoose.Schema({
+ const movimientoSchema = new mongoose.Schema({
   tipo: {
     type: String,
     enum: ["Ingreso", "Egreso"],
@@ -14,7 +14,7 @@ const movimientoSchema = new mongoose.Schema({
   fecha: { type: Date, default: Date.now },
   detalle: { type: String, trim: true },
 });
-
+ 
 const usuarioSchema = new mongoose.Schema({
   nombre: {
     type: String,

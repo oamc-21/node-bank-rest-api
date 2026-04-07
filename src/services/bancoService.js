@@ -1,4 +1,6 @@
-const Usuario = require("../models/usuario");
+const Usuario = require("../models/UsuarioModel");
+const Transferencia = require("../models/TransferenciaModel");
+const mongoose = require("mongoose");
 
 //#region () depositar
 const depositar = async (identificacion, monto) => {
@@ -84,10 +86,63 @@ const eliminarCliente = async (identificacion) => {
 
 //#endregion
 
+const transferir = async (idEmisor, idReceptor, monto, idempotencia_key) => {
+  //Busqueda de usuarios para obtener sus id's reales _id.
+  const emisorBD = await Usuario.findOne({identificacion: idEmisor});
+  const receptorBD = await Usuario.findOne({identificacion: idReceptor});
+  
+  if(!emisorBD || !receptorBD){
+    throw new Error("No se ha encontrado uno o más usuarios en el sistema!");
+  }
+
+  const nuevaTransferencia = new Transferencia({
+    idempotencia_key,
+    tipo: "transferencia",
+    emisor: emisorBD._id,
+    receptor: receptorBD._id,
+    monto,
+    estado: "pendiente",
+  });
+
+  // Se guarda el testigo para idempotencia.
+  await nuevaTransferencia.save();
+
+  //Inicio la sesion de mongo para trabajar con el dinero
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const emisor = await Usuario.findOne({ identificacion: idEmisor }).session(session);
+    const receptor = await Usuario.findOne({identificacion: idReceptor}).session(session);
+
+    if (emisor.saldo < monto) throw new Error("Fondos insuficientes!");
+    
+    emisor.saldo -= monto;
+    receptor.saldo += monto;
+
+
+    await emisor.save({ session });
+    await receptor.save({ session });
+
+    await session.commitTransaction();
+    nuevaTransferencia.estado = "completado";
+
+  } catch (error) {
+    await session.abortTransaction();
+    nuevaTransferencia.estado = "fallido";
+    console.error("Error en transferencia: ", error.message);
+    throw error;
+  } finally {
+    session.endSession();
+    await nuevaTransferencia.save();
+  }
+};
+
 module.exports = {
   verHistorial,
   depositar,
   retirar,
   agregarCliente,
   eliminarCliente,
+  transferir,
 };

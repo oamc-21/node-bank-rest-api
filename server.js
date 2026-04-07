@@ -3,9 +3,11 @@ require("node:dns/promises").setServers(["1.1.1.1", "8.8.8.8"]);
 require("dotenv").config();
 const mongoose = require("mongoose");
 const express = require("express");
+const {apiReference} = require('@scalar/express-api-reference')
 const bancoRoutes = require("./src/routes/bancoRoutes");
 const app = express();
 const PORT = process.env.PORT || 8383;
+
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -14,6 +16,7 @@ mongoose
 
 app.use(express.json());
 
+
 //#region  middleware
 app.use((req, res, next) => {
   console.log(
@@ -21,6 +24,66 @@ app.use((req, res, next) => {
   );
   next();
 });
+
+//#endregion
+
+//#region scalar 
+app.use(
+  "/docs",
+  apiReference({
+    theme: "purple", 
+    spec: {
+      content: {
+        openapi: "3.1.0",
+        info: {
+          title: "restApi bancaria",
+          version: "1.0.0",
+          description: "Documentación de mi api rest usando scalar",
+        },
+        paths: {
+          "/api/registrar": {
+            post: {
+              summary: "Registrar un nuevo cliente",
+              responses: { 200: { description: "Usuario creado" } },
+            },
+          },
+          "/api/depositar": {
+            post: {
+              summary: "Realizar un depósito",
+              responses: { 200: { description: "Dinero depositado" } },
+            },
+          },
+
+          "/api/retirar": {
+            post: {
+              summary: "Realizar un retiro",
+              responses: { 200: { description: "Retiro efectuado" } },
+            },
+          },
+
+          "/api/historial/{identificacion}": {
+            get: {
+              summary: "Obtener historial de movimientos de un cliente",
+              responses: { 200: { description: "Historial de movimientos: " } },
+            },
+          },
+          "/api/eliminar/{identificacion}": {
+            delete: {
+              summary: "Eliminar un cliente/registro",
+              responses: {200: {description: "Se ha eliminado al cliente"}},
+            }
+          },
+          "/api/transferencia/": {
+            post:{
+              summary: "Realizar una transferencia",
+              responses: {200: {description: "Transferencia exitosa!"}}
+            }
+          }
+        },
+      },
+    },
+  }),
+);
 
 //#endregion
 

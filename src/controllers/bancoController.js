@@ -4,6 +4,7 @@ const {
   verHistorial,
   agregarCliente,
   eliminarCliente,
+  transferir,
 } = require("../services/bancoService");
 
 //#region realizar deposito ()
@@ -66,11 +67,9 @@ const registrarCliente = async (req, res) => {
   try {
     const { nombre, identificacion } = req.body;
     if (!nombre || !nombre.trim()) {
-      return res
-        .status(400)
-        .json({
-          error: "El nombre no puede estar vacio o contener solo espacios",
-        });
+      return res.status(400).json({
+        error: "El nombre no puede estar vacio o contener solo espacios",
+      });
     }
     if (!identificacion || !identificacion.trim()) {
       return res
@@ -89,6 +88,7 @@ const registrarCliente = async (req, res) => {
 //#endregion
 
 //#region borrar Cliente ()
+
 const borrarCliente = async (req, res) => {
   try {
     const { identificacion } = req.params;
@@ -110,10 +110,31 @@ const borrarCliente = async (req, res) => {
 };
 //#endregion
 
+
+//#region realizar Transferencia
+const realizarTransferencia = async (req, res) => {
+  try {
+    const { idEmisor, idReceptor, monto, idempotencia_key } = req.body;
+    if (!idEmisor || !idReceptor || !monto || !idempotencia_key) {
+      return res.status(400).json({
+        error: "La cuenta origen y destino son obligatoriasl.",
+      })
+      };
+      await transferir(idEmisor,idReceptor,monto,idempotencia_key);
+      res.status(200).json({mensaje: "Transferencia exitosa!",});
+    
+  }catch (error) {
+    res.status(400).json({ mensaje: error.message });
+  };
+};
+
+//#endregion
+
 module.exports = {
   realizarDeposito,
   realizarRetiro,
   consultarHistorial,
   registrarCliente,
   borrarCliente,
-};
+  realizarTransferencia,
+}
