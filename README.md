@@ -12,19 +12,19 @@ RESTful API robusta diseñada para gestionar operaciones bancarias. Este proyect
 
 ## Retos Técnicos Resueltos
 
-### 1. Garantía de Integridad (Transacciones ACID) ⚖️
+### 1. Garantía de Integridad (Transacciones ACID) 
 En el sector financiero, el dinero no puede "desaparecer". Utilicé **Mongoose Sessions** para asegurar que las transferencias sean atómicas:
 > *Si el emisor tiene saldo pero el proceso de acreditación al receptor falla, el sistema realiza un **rollback** automático. El flujo garantiza que el débito y el crédito ocurran como una sola unidad de trabajo indivisible.*
 
-### 2. Seguridad y Protección de Identidad (Auth) 🔐
+### 2. Seguridad y Protección de Identidad (Auth) 
 Implementé un sistema de autenticación basado en **JSON Web Tokens (JWT)** y encriptación de grado industrial:
 * **Bcryptjs:** Las contraseñas nunca se almacenan en texto plano; se utiliza un proceso de *hashing* con *salts* antes de persistir en la base de datos mediante hooks de Mongoose.
 * **Protección de Rutas:** Middleware personalizado para la verificación de tokens, asegurando que solo el propietario de la cuenta pueda realizar retiros o consultar movimientos sensibles.
 
-### 3. Prevención de Duplicados (Idempotencia) 🛡️
+### 3. Prevención de Duplicados (Idempotencia) 
 Lógica de `idempotencia_key` en transacciones críticas. Esto garantiza que si un error de red provoca un reintento de envío, el sistema detecte la transacción procesada y **evite cargos dobles**, protegiendo el patrimonio del cliente.
 
-### 4. Arquitectura Limpia (Patrón MSC) 🏗️
+### 4. Arquitectura Limpia (Patrón MSC) 
 Organización bajo el patrón **Model-Service-Controller**, separando responsabilidades para facilitar el mantenimiento:
 * **Models:** Esquemas con validaciones estrictas y middlewares de ciclo de vida (`pre-save`) optimizados para funciones asíncronas.
 * **Services:** El "cerebro" de la aplicación donde reside la lógica de negocio, el manejo de sesiones y las reglas financieras.

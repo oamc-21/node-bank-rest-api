@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 //#endregion
 
 //#region scalar 
-/* app.use(
+app.use(
   "/docs",
   apiReference({
     theme: "purple", 
@@ -90,7 +90,7 @@ app.use((req, res, next) => {
       },
     },
   }),
-); */
+);
 
 //#endregion
 
