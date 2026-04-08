@@ -7,6 +7,7 @@ const {
   eliminarCliente,
   transferir,
   obtenerMovimientos,
+  autenticarCliente
 } = require("../services/bancoService");
 
 //#region realizar deposito ()
@@ -34,7 +35,8 @@ const realizarDeposito = async (req, res) => {
 //#region realizar retiro ()
 const realizarRetiro = async (req, res) => {
   try {
-    const { identificacion, monto } = req.body;
+    const {identificacion } = req.usuario
+    const {monto}  = req.body;
     const montoNumerico = Number(monto);
     if (isNaN(montoNumerico) || montoNumerico <= 0) {
       return res
@@ -67,7 +69,7 @@ const consultarHistorial = async (req, res) => {
 //#region registrarCliente ()
 const registrarCliente = async (req, res) => {
   try {
-    const { nombre, identificacion } = req.body;
+    const { nombre, identificacion, password} = req.body;
     if (!nombre || !nombre.trim()) {
       return res.status(400).json({
         error: "El nombre no puede estar vacio o contener solo espacios",
@@ -78,7 +80,11 @@ const registrarCliente = async (req, res) => {
         .status(400)
         .json({ error: "La identificacion es obligatoria" });
     }
-    const resultado = await agregarCliente(nombre, identificacion);
+
+    if(!password || !password.trim()){
+      return res.status(400).json({error: "La contraseña es obligatoria"});
+    }
+    const resultado = await agregarCliente(nombre, identificacion, password);
     res.status(201).json({
       mensaje: "Se ha agregado el nuevo cliente!",
       cliente: resultado,
@@ -88,6 +94,29 @@ const registrarCliente = async (req, res) => {
   }
 };
 //#endregion
+
+const loginCliente = async(req, res) =>{
+  try {
+    const {identificacion, password} = req.body
+     if (!identificacion || !password) {
+       return res
+         .status(400)
+         .json({ mensaje: "Identificacion y password requeridos" });
+     }
+     const {usuario, token} = await autenticarCliente(identificacion, password);
+     res.status(200).json({
+      mensaje: "Login exitoso",
+      token, 
+      usuario:{
+        nombre: usuario.nombre,
+        identificacion: usuario.identificacion
+      }
+     })
+  } catch (error) {
+    res.status(401).json({mensaje: error.message});
+  }
+}
+
 
 //#region borrar Cliente ()
 
@@ -116,7 +145,8 @@ const borrarCliente = async (req, res) => {
 //#region realizar Transferencia
 const realizarTransferencia = async (req, res) => {
   try {
-    const { idEmisor, idReceptor, monto, idempotencia_key } = req.body;
+    const idEmisor  = req.usuario.identificacion;
+    const { idReceptor, monto, idempotencia_key } = req.body;
     if (!idEmisor || !idReceptor || !monto || !idempotencia_key) {
       return res.status(400).json({
         error: "La cuenta origen y destino son obligatoriasl.",
@@ -135,7 +165,7 @@ const realizarTransferencia = async (req, res) => {
 const obtenerHMovimientos = async(req, res)=>{
 
   try {
-    const { identificacion } = req.params;
+    const { identificacion } = req.usuario;
     const usuario = await Usuario.findOne({ identificacion: identificacion });
     if (!usuario) {
       return res.status(400).json({ mensaje: "Usuario no encontrado!" });
@@ -161,4 +191,5 @@ module.exports = {
   borrarCliente,
   realizarTransferencia,
   obtenerHMovimientos,
+  loginCliente,
 }

@@ -1,6 +1,8 @@
 const Usuario = require("../models/UsuarioModel");
 const Transferencia = require("../models/TransferenciaModel");
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 //#region () depositar
 const depositar = async (identificacion, monto) => {
@@ -56,7 +58,7 @@ const verHistorial = async (identificacion) => {
 //#endregion
 
 //#region () agregar cliente
-const agregarCliente = async (nombre, identificacion) => {
+const agregarCliente = async (nombre, identificacion, password) => {
   const usuarioExistente = await Usuario.findOne({
     identificacion: identificacion,
   });
@@ -66,12 +68,27 @@ const agregarCliente = async (nombre, identificacion) => {
   const nuevoUsuario = new Usuario({
     nombre: nombre,
     identificacion: identificacion,
+    password: password,
   });
   await nuevoUsuario.save();
   return nuevoUsuario;
 };
 
 //#endregion
+
+const autenticarCliente = async (identificacion, password) => {
+  const usuario = await Usuario.findOne({ identificacion });
+  if (!usuario) throw new Error("Usuario no encontrado!");
+  const esValido = await bcrypt.compare(password, usuario.password);
+  if (!esValido) throw new Error("Contraseña incorrecta");
+
+  const token = jwt.sign(
+    { id: usuario._id, identificacion: usuario.identificacion },
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" },
+  );
+  return { usuario, token };
+};
 
 //#region () Eliminar cliente
 const eliminarCliente = async (identificacion) => {
@@ -88,10 +105,10 @@ const eliminarCliente = async (identificacion) => {
 
 const transferir = async (idEmisor, idReceptor, monto, idempotencia_key) => {
   //Busqueda de usuarios para obtener sus id's reales _id.
-  const emisorBD = await Usuario.findOne({identificacion: idEmisor});
-  const receptorBD = await Usuario.findOne({identificacion: idReceptor});
-  
-  if(!emisorBD || !receptorBD){
+  const emisorBD = await Usuario.findOne({ identificacion: idEmisor });
+  const receptorBD = await Usuario.findOne({ identificacion: idReceptor });
+
+  if (!emisorBD || !receptorBD) {
     throw new Error("No se ha encontrado uno o más usuarios en el sistema!");
   }
 
@@ -112,21 +129,23 @@ const transferir = async (idEmisor, idReceptor, monto, idempotencia_key) => {
   session.startTransaction();
 
   try {
-    const emisor = await Usuario.findOne({ identificacion: idEmisor }).session(session);
-    const receptor = await Usuario.findOne({identificacion: idReceptor}).session(session);
+    const emisor = await Usuario.findOne({ identificacion: idEmisor }).session(
+      session,
+    );
+    const receptor = await Usuario.findOne({
+      identificacion: idReceptor,
+    }).session(session);
 
     if (emisor.saldo < monto) throw new Error("Fondos insuficientes!");
-    
+
     emisor.saldo -= monto;
     receptor.saldo += monto;
-
 
     await emisor.save({ session });
     await receptor.save({ session });
 
     await session.commitTransaction();
     nuevaTransferencia.estado = "completado";
-
   } catch (error) {
     await session.abortTransaction();
     nuevaTransferencia.estado = "fallido";
@@ -138,11 +157,14 @@ const transferir = async (idEmisor, idReceptor, monto, idempotencia_key) => {
   }
 };
 
-const obtenerMovimientos = async (usuarioId) =>{
-  return await Transferencia.find({$or: [
-    {emisor: usuarioId},{receptor: usuarioId}
-  ]}).sort({createdAt: -1}).populate('emisor', 'nombre').populate('receptor', 'nombre');
-}
+const obtenerMovimientos = async (usuarioId) => {
+  return await Transferencia.find({
+    $or: [{ emisor: usuarioId }, { receptor: usuarioId }],
+  })
+    .sort({ createdAt: -1 })
+    .populate("emisor", "nombre")
+    .populate("receptor", "nombre");
+};
 
 module.exports = {
   verHistorial,
@@ -152,4 +174,5 @@ module.exports = {
   eliminarCliente,
   transferir,
   obtenerMovimientos,
+  autenticarCliente,
 };

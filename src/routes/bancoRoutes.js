@@ -8,15 +8,18 @@ const {
   borrarCliente,
   realizarTransferencia,
   obtenerHMovimientos,
+  loginCliente,
 } = require("../controllers/bancoController");
+const { verificarToken } = require("../middlewares/authMiddleware");
 
-
+console.log({registrarCliente, realizarDeposito, verificarToken});
 router.post("/registrar", registrarCliente);
 router.post("/depositar", realizarDeposito);
-router.post("/retirar", realizarRetiro);
+router.post("/retirar", verificarToken, realizarRetiro);
 //router.get("/historial/:identificacion", consultarHistorial);
 router.delete("/eliminar/:identificacion", borrarCliente);
-router.post("/transferencia", realizarTransferencia)
-router.get("/movimientos/:identificacion", obtenerHMovimientos);
+router.post("/transferencia",verificarToken,  realizarTransferencia);
+router.get("/movimientos/", verificarToken, obtenerHMovimientos);
+router.post("/login", loginCliente);
 
 module.exports = router;

@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 //#endregion
 
 //#region scalar 
-app.use(
+/* app.use(
   "/docs",
   apiReference({
     theme: "purple", 
@@ -78,12 +78,19 @@ app.use(
               summary: "Realizar una transferencia",
               responses: {200: {description: "Transferencia exitosa!"}}
             }
+          },
+
+          "/api/login/":{
+            post:{
+              summary: "Autenticacion / login cliente",
+              responses: {200: {description: "Login exitoso!"}}
+            }
           }
         },
       },
     },
   }),
-);
+); */
 
 //#endregion
 

@@ -32,7 +32,21 @@ const usuarioSchema = new mongoose.Schema({
     default: 0,
     min: [0, "El saldo no puede quedar en negativo"],
   },
+  password:{
+    type: String,
+    required: true
+  },
+
   movimientos: [movimientoSchema],
 });
+const bcrypt = require('bcryptjs');
+usuarioSchema.pre('save', async function () { // <--- Sin el "next"
+  if (!this.isModified('password')) return; // <--- Solo return, sin llamar a nada
+  
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  // Al ser async, Mongoose sabe que cuando termine esta función, puede seguir.
+});
+  
 
 module.exports = mongoose.model("Usuario", usuarioSchema);
